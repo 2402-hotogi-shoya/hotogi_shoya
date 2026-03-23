@@ -1,12 +1,17 @@
 package com.example.hotogi_shoya.controller.form;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 public class TaskForm {
 
     private int id;
+    @NotBlank(message = "タスクを入力してください")
     private String content;
     private String status;
+    @NotNull(message = "期限を設定してください")
     private LocalDateTime limit_date;
     private LocalDateTime created_date;
     private LocalDateTime updated_date;

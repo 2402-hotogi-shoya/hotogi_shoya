@@ -9,5 +9,72 @@
     <div class="header-contents">
         <h1>TODO</h1>
     </div>
+    <div>
+        本日の日付：
+    </div>
+    <div class="add-button">
+        <a href="/new">
+            <button type="submit" >新規タスク</button>
+        </a>
+    </div>
+    <form>
+        <label>期限</label>
+        <input type="date" name="startDate" />～
+        <input type="date" name="endDate" />
+            ステータス
+        <select>
+            <!-- 初期値として空の選択肢を入れる場合 -->
+            <option value=""></option>
+            <!-- リストからオプションを生成 -->
+            <option th:each="option : ${options}"
+                    th:value="${option}"
+                    th:text="${option}">
+            </option>
+        </select>
+        タスク内容<input type="text" name="task" />
+        <button type="submit">絞込</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>タスク内容</th>
+            <th>ステータス</th>
+            <th></th> <!-- 変更ボタン用 -->
+            <th>タスク期限</th>
+            <th></th> <!-- 編集・削除ボタン用 -->
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="task : ${tasks}">
+            <!-- タスク内容 -->
+            <td th:text="${task.content}"></td>
+
+            <!-- ステータス -->
+            <td th:text="${task.status}"></td>
+
+            <!-- 変更ボタン -->
+            <td>
+                <button>
+                    変更
+                </button>
+            </td>
+
+            <!-- タスク期限 -->
+            <td th:text="${task.limit_date}"></td>
+
+            <!-- 編集・削除 -->
+            <td>
+                <button>
+                    編集
+                </button>
+                <button>
+                    削除
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 </body>
 </html>
