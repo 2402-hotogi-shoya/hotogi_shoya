@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TaskController {
@@ -33,10 +36,19 @@ public class TaskController {
         // 投稿を全件取得
         List<TaskForm> taskData = taskService.findAllReport();
 
-        //フィルタープルダウン
-        List<String> options = Arrays.asList("未着手", "実行中", "ステイ中", "完了");
-        mav.addObject("options", options);
+        //今日の日付取得
+        String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+
+        //値と内容の紐づけ用
+        Map<Short, String> map = new HashMap<>();
+        map.put((short)1, "未着手");
+        map.put((short)2, "実行中");
+        map.put((short)3, "ステイ中");
+        map.put((short)4, "完了");
+
         mav.addObject("tasks", taskData);
+        mav.addObject("map", map);
+        mav.addObject("today", formattedDate);
 
         return mav;
     }
