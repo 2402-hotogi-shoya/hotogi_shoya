@@ -49,6 +49,7 @@ public class TaskService {
      * レコード追加
      */
     public void saveTask(TaskForm reqTask) {
+        reqTask.setStatus((short) 1);
         Task saveTask = setReportEntity(reqTask);
         taskRepository.save(saveTask);
     }
@@ -67,9 +68,8 @@ public class TaskService {
         Task task = new Task();
         task.setId(reqTask.getId());
         task.setContent(reqTask.getContent());
+        task.setStatus(reqTask.getStatus());
         task.setLimitDate(reqTask.getLimit_date());
-        task.setUpdatedDate(LocalDateTime.parse(formatNowDate, dtf1));
-        task.setCreatedDate(LocalDateTime.parse(formatNowDate, dtf1));
         return task;
     }
 }

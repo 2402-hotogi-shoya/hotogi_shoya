@@ -1,13 +1,18 @@
 package com.example.hotogi_shoya.repository.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "tasks")
 public class Task {
 
@@ -20,18 +25,18 @@ public class Task {
     private String content;
 
     @Column
-    private String status;
+    private Short status;
 
     @Column(name = "limit_date")
-    private LocalDateTime limitDate;
+    private LocalDate limitDate;
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    private Date createdDate;
 
     @LastModifiedDate
     @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
+    private Date updatedDate;
 
     public int getId() {
         return id;
@@ -49,35 +54,35 @@ public class Task {
         this.content = content;
     }
 
-    public String getStatus() {
+    public Short getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Short status) {
         this.status = status;
     }
 
-    public LocalDateTime getLimitDate() {
+    public LocalDate getLimitDate() {
         return limitDate;
     }
 
-    public void setLimitDate(LocalDateTime limitDate) {
+    public void setLimitDate(LocalDate limitDate) {
         this.limitDate = limitDate;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getUpdatedDate() {
+    public Date getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate) {
+    public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
 }
