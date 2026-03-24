@@ -29,7 +29,7 @@
                     th:text="${entry.value}">
             </option>
         </select>
-        タスク内容<input type="text" name="task" />
+        タスク内容<input type="text" name="filterText" />
         <button type="submit">絞込</button>
     </form>
     <table>
@@ -67,16 +67,20 @@
             </td>
 
             <!-- タスク期限 -->
-            <td th:text="${task.limit_date}"></td>
+            <td th:text="${task.limitDate}"></td>
 
             <!-- 編集・削除 -->
             <td>
-                <button>
-                    編集
-                </button>
-                <button>
-                    削除
-                </button>
+                <div class="edit-button">
+                    <a th:href="@{/edit/{id}(id=${task.id})}">
+                        <input type="button" value="編集">
+                    </a>
+                </div>
+            </td>
+            <td>
+                <form th:method="delete" th:action="@{/delete/{id}(id=${task.id})}">
+                    <button type="submit">削除</button>
+                </form>
             </td>
         </tr>
         </tbody>

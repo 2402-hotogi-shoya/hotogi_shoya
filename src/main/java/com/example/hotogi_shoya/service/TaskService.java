@@ -6,8 +6,7 @@ import com.example.hotogi_shoya.repository.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,9 @@ public class TaskService {
     /*
      * レコード全件取得処理
      */
-    public List<TaskForm> findAllReport() {
-        List<Task> results = taskRepository.findAllByOrderByLimitDateAsc();
+    public List<TaskForm> findAllReport(LocalDate starDate, LocalDate endDate, String filterText, Short status) {
+        List<Task> results =
+                taskRepository.findTasksReport(starDate, endDate, filterText, status);
         List<TaskForm> reports = setCommentForm(results);
         return reports;
     }
@@ -38,7 +38,7 @@ public class TaskService {
             task.setId(result.getId());
             task.setContent(result.getContent());
             task.setStatus(result.getStatus());
-            task.setLimit_date(result.getLimitDate());
+            task.setLimitDate(result.getLimitDate());
 
             tasks.add(task);
         }
@@ -50,26 +50,46 @@ public class TaskService {
      */
     public void saveTask(TaskForm reqTask) {
         reqTask.setStatus((short) 1);
-        Task saveTask = setReportEntity(reqTask);
+        Task saveTask = setTaskEntity(reqTask);
         taskRepository.save(saveTask);
     }
 
     /*
      * リクエストから取得した情報をEntityに設定
      */
-    private Task setReportEntity(TaskForm reqTask) {
-        // 現在日時を取得
-        LocalDateTime nowDate = LocalDateTime.now();
-
-        // 表示形式を指定
-        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS"); // ①
-        String formatNowDate = dtf1.format(nowDate); // ②
+    private Task setTaskEntity(TaskForm reqTask) {
 
         Task task = new Task();
         task.setId(reqTask.getId());
         task.setContent(reqTask.getContent());
         task.setStatus(reqTask.getStatus());
-        task.setLimitDate(reqTask.getLimit_date());
+        task.setLimitDate(reqTask.getLimitDate());
         return task;
+    }
+
+    /*
+     * レコード1件取得処理
+     */
+    public Task selectTask(Integer id) {
+        Task result = taskRepository.findById(id).orElse(null);
+        return result;
+    }
+
+    /*
+     * 投稿編集処理
+     */
+    public void updateTaskEntity(TaskForm reqTask) {
+        Task saveTask = taskRepository.findById(reqTask.getId())
+                .orElseThrow(() -> new RuntimeException("データがない"));
+        saveTask.setContent(reqTask.getContent());
+        saveTask.setLimitDate(reqTask.getLimitDate());
+        taskRepository.save(saveTask);
+    }
+
+    /*
+     * レコード削除
+     */
+    public void deleteTask(int id) {
+        taskRepository.deleteById(id);
     }
 }
