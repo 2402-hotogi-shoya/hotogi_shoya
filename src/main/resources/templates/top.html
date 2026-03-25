@@ -53,7 +53,8 @@
 
             <!-- ステータス -->
             <td>
-                <form method="post" th:action="@{/status/update/{id}(id=${task.id})}">
+                <form method="post" th:action="@{/status/update/{id}(id=${task.id})}"
+                      onsubmit="return confirm('ステータスを更新しますか？')">
                     <select name="status">
                         <option th:each="entry : ${map.entrySet()}"
                                 th:value="${entry.key}"
@@ -79,7 +80,8 @@
                 </div>
             </td>
             <td>
-                <form th:method="delete" th:action="@{/delete/{id}(id=${task.id})}">
+                <form th:method="delete" th:action="@{/delete/{id}(id=${task.id})}"
+                      onsubmit="return confirm('本当に削除しますか？')">
                     <button type="submit">削除</button>
                 </form>
             </td>
