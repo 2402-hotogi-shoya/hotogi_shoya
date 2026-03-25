@@ -11,19 +11,21 @@
 </div>
 <div class="main-contents">
     <form th:method="post" th:action="@{/update/{id}(id=${taskModel.id})}" th:object="${taskModel}">
-<!--        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" style="color:red"></div>-->
-<!--        <div th:if="${#fields.hasErrors('limit_date')}" th:errors="*{limit_date}" style="color:red"></div>-->
+        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" style="color:red"></div>
+        <div th:if="${#fields.hasErrors('limitDate')}" th:errors="*{limitDate}" style="color:red"></div>
+
         <label>タスク内容</label>
         <div class="task-area">
             <textarea class="task-box" th:field="*{content}" size="20" maxlength="200"></textarea><br/>
         </div><br>
+
         <label>タスク期限</label>
         <div class="limit-date">
-            <input th:field="*{limitDate}" type="date"/>
+            <input type="date" th:field="*{limitDate}" />
         </div><br>
-        <input type="submit" value="編集"/><br>
+        <input type="submit" value="編集"/>
     </form>
-</div>
+</div><br>
 <div>
     <a href="/">
         戻る

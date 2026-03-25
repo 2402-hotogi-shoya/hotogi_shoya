@@ -7,39 +7,42 @@
 </head>
 <body>
     <div class="header-contents">
-        <h1>TODO</h1>
+        <h1>ToDo</h1>
+    </div>
+    <div th:if="${error}" style="color:red;">
+        <p th:text="${error}"></p>
     </div>
     <div>
-        <p th:text="'今日の日付：' + ${today}"></p>
+        <p th:text="'本日の日付：' + ${todayFormat}"></p>
     </div>
     <div class="add-button">
         <a href="/new">
-            <button type="submit" >新規タスク</button>
+            <button type="submit">新規タスク</button>
         </a>
-    </div>
+    </div><br>
     <form>
         <label>期限</label>
         <input type="date" name="startDate" />～
         <input type="date" name="endDate" />
             ステータス
-        <select>
+        <select name="status">
             <option value=""></option>
             <option th:each="entry : ${map.entrySet()}"
                     th:value="${entry.key}"
-                    th:text="${entry.value}">
+                    th:text="${entry.value}"
+                    th:selected="${entry.key} == selectedStatus">
             </option>
         </select>
-        タスク内容<input type="text" name="filterText" />
+        タスク内容<input type="text" name="filterText"/>
         <button type="submit">絞込</button>
-    </form>
+    </form><br>
     <table>
         <thead>
         <tr>
             <th>タスク内容</th>
             <th>ステータス</th>
-            <th></th> <!-- 変更ボタン用 -->
             <th>タスク期限</th>
-            <th></th> <!-- 編集・削除ボタン用 -->
+            <th></th><!-- 編集・削除ボタン用 -->
         </tr>
         </thead>
 
@@ -50,24 +53,22 @@
 
             <!-- ステータス -->
             <td>
-                <select>
-                    <option th:each="entry : ${map.entrySet()}"
-                            th:value="${entry.key}"
-                            th:text="${entry.value}"
-                            th:selected="${task.status} == ${entry.key}">
-                    </option>
-                </select>
-            </td>
-
-            <!-- 変更ボタン -->
-            <td>
-                <button>
-                    変更
-                </button>
+                <form method="post" th:action="@{/status/update/{id}(id=${task.id})}">
+                    <select name="status">
+                        <option th:each="entry : ${map.entrySet()}"
+                                th:value="${entry.key}"
+                                th:text="${entry.value}"
+                                th:selected="${task.status} == ${entry.key}">
+                        </option>
+                    </select>
+                    <button type="submit">変更</button>
+                </form>
             </td>
 
             <!-- タスク期限 -->
-            <td th:text="${task.limitDate}"></td>
+            <td th:classappend="${task.limitDate.isBefore(today)} ? 'past' : 'today'">
+                <span th:text="${#temporals.format(task.limitDate, 'yyyy/MM/dd')}"></span>
+            </td>
 
             <!-- 編集・削除 -->
             <td>

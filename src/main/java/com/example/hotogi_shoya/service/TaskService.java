@@ -92,4 +92,16 @@ public class TaskService {
     public void deleteTask(int id) {
         taskRepository.deleteById(id);
     }
+
+    /*
+     * 投稿編集処理
+     */
+    public void updateStatusEntity(int id, short status) {
+
+        Task updateTask = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("データがない"));
+
+        updateTask.setStatus(status);
+        taskRepository.save(updateTask);
+    }
 }

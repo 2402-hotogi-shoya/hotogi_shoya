@@ -10,10 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,8 @@ public class TaskController {
 
 
         //今日の日付取得
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        LocalDate today = LocalDate.now();
+        String todayFormat = today.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         LocalDate start;
         LocalDate end;
         if (startDate == null || startDate.isEmpty()) {
@@ -69,7 +70,8 @@ public class TaskController {
         mav.addObject("tasks", taskData);
         mav.addObject("map", map);
         mav.addObject("today", today);
-
+        mav.addObject("todayFormat", todayFormat);
+        model.addAttribute("selectedStatus", status);
         return mav;
     }
 
@@ -111,11 +113,25 @@ public class TaskController {
      * 投稿編集処理
      */
     @GetMapping("/edit/{id}")
-    public ModelAndView editContent(@PathVariable int id) {
+    public ModelAndView editContent(@PathVariable String id,
+                                    RedirectAttributes redirectAttributes) {
 
         ModelAndView mav = new ModelAndView();
+
+        if (!id.isBlank() && !id.matches("\\d+")) {
+            redirectAttributes.addFlashAttribute("error", "・不正なパラメータです");
+            mav.setViewName("redirect:/");
+            return mav;
+        }
+
         //編集するコメントを取得
-        Task task = taskService.selectTask(id);
+        Task task = taskService.selectTask(Integer.valueOf(id));
+
+        if (task == null) {
+            redirectAttributes.addFlashAttribute("error", "・不正なパラメータです");
+            mav.setViewName("redirect:/");
+            return mav;
+        }
         //編集するコメントをセット
         mav.addObject("taskModel", task);
         //画面遷移先を指定
@@ -130,19 +146,34 @@ public class TaskController {
     @PostMapping("/update/{id}")
     public ModelAndView editContent(@PathVariable Integer id,
                                     @Valid @ModelAttribute("taskModel") TaskForm taskForm,
-                                    BindingResult result) {
+                                    BindingResult result,
+                                    RedirectAttributes redirectAttributes) {
 
         // バリデーションエラーがある場合は入力画面に戻す
         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.taskForm", result);
+            redirectAttributes.addFlashAttribute("taskModel", taskForm);
             ModelAndView mav = new ModelAndView();
             mav.setViewName("/edit");
-            mav.addObject("taskModel", taskForm);
             return mav;
         }
 
         //編集するコメントをセット
         taskService.updateTaskEntity(taskForm);
         // rootへリダイレクト
+        return new ModelAndView("redirect:/");
+    }
+
+
+    /*
+     * ステータス更新処理
+     */
+    @PostMapping("/status/update/{id}")
+    public ModelAndView StatusUpdate(@PathVariable int id,
+                                     @RequestParam Short status) {
+
+        taskService.updateStatusEntity(id, status);
+        //画面遷移先を指定
         return new ModelAndView("redirect:/");
     }
 

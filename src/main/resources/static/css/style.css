@@ -1,0 +1,43 @@
+
+
+.task-box {
+    margin: 5px 0px;
+	width: 500px;
+	height: 120px;
+}
+
+.errorMessages {
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	color: red;
+}
+
+.past span {
+	background-color: indianred;
+	color: black;
+	padding: 2px 6px;
+}
+
+.today span {
+	background-color: yellow;
+	color: black;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+table {
+	border-collapse: collapse;
+	margin-left: 20px;
+}
+
+thead th, tbody td {
+	padding: 8px 12px;
+	text-align: left;
+}
+
+form select, button, input[type="button"] {
+	margin-right: 6px;
+	padding: 4px 6px;
+}
